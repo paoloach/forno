@@ -1,3 +1,22 @@
+*.sym
+*.lst
+*.p1
+*.p1.d
+*.pre
+*.cmf
+*.cof
+*.hxl
+*.map
+*.mum
+*.rlf
+*.sdb
+
+
+*.DBK
+*.DSN
+*.PWI
+/schemi
+
 # Object files
 *.o
 *.ko
