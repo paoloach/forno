@@ -34,5 +34,6 @@ void InitApp(void)
     initLCD();
     initADC();
     initRS232();
+    initPWM();
 }
 

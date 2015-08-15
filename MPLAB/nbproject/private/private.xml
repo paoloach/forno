@@ -4,11 +4,8 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/home/paolo/MPLABXProjects/forno/trunk/src/ADC.c</file>
-            <file>file:/home/paolo/MPLABXProjects/forno/trunk/src/main.c</file>
-            <file>file:/home/paolo/MPLABXProjects/forno/trunk/src/user.c</file>
-            <file>file:/home/paolo/MPLABXProjects/forno/trunk/src/ADC.h</file>
-            <file>file:/home/paolo/MPLABXProjects/forno/trunk/src/LCD.c</file>
+            <file>file:/home/paolo/workspace/forno/MPLAB/src/main.c</file>
+            <file>file:/home/paolo/workspace/forno/MPLAB/src/ADC.c</file>
         </group>
     </open-files>
 </project-private>

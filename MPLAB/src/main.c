@@ -28,6 +28,8 @@
 #include "TempConverter.h"
 #include "DS18B20.h"
 #include "RS232.h"
+#include "PWM.h"
+
 
 
 /******************************************************************************/
@@ -40,7 +42,8 @@
 /* Main Program                                                               */
 /******************************************************************************/
 char  buffer[16];
-int status;
+int status=0;
+uint16_t thereshold=110;;
 void main(void)
 {
     /* Configure the oscillator for the device */
@@ -52,6 +55,7 @@ void main(void)
     /* TODO <INSERT USER APPLICATION CODE HERE> */
     uint16_t localTemp=0;
     uint16_t dataCount=0;
+    uint16_t tempReal=0;
     startDS18B20();
     while(1) {
         localTemp = getDS18B20();
@@ -59,6 +63,10 @@ void main(void)
         uint16_t mv2 = getVolt(THERM2);
         uint16_t mean = (mv1 + mv2)/2;
         uint16_t temp = tempConvert(mv1);
+        
+
+        
+        
         if (localTemp != 0xFF){
             itoa(buffer,localTemp,10);
             line2();
@@ -70,6 +78,8 @@ void main(void)
             writeLCD(buffer);
             writeLCD("    ");
             startDS18B20();
+            
+            tempReal = localTemp + temp;
         }
         itoa(buffer,temp,10);
         for(uint8_t i=0; buffer[i] != 0; i++){
@@ -89,6 +99,12 @@ void main(void)
         } else {
             sendRS232(',');
             sendRS232(' ');
+        }
+        
+        if (tempReal > thereshold ){
+            disableOut();
+        } else {
+            enableOut();
         }
         
     }

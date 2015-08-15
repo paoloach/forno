@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project>
-  <executable name="dist/default/production/MPLAB.production.hex">
+  <executable name="dist/default/debug/MPLAB.debug.hex">
     <memory name="program">
       <units>bytes</units>
       <length>65536</length>
-      <used>4350</used>
-      <free>61186</free>
+      <used>4340</used>
+      <free>61196</free>
     </memory>
     <memory name="data">
       <units>bytes</units>
