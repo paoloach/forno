@@ -49,6 +49,17 @@ void writeLCD(const char * str){
     }
 }
 
+void writeLCDC(const char * str, unsigned char len){
+    for (int i=0; i < len; i++){
+        char data  = *str;
+        if (data < 32){
+            data = ' ';
+        }
+        writeDataLCD(data);
+        str++;
+    }
+}
+
 
 
 static void waitForLCDStart(void){

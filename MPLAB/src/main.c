@@ -20,6 +20,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <delays.h>
+#include <pic18f4620.h>
 
 #include "system.h"        /* System funct/params, like osc/peripheral config */
 #include "user.h"          /* User funct/params, such as InitApp */
@@ -41,9 +42,24 @@
 /******************************************************************************/
 /* Main Program                                                               */
 /******************************************************************************/
+typedef unsigned char bool;
 char  buffer[16];
 int status=0;
+uint16_t localTemp;
 uint16_t thereshold=110;;
+uint16_t tempReal=0;
+struct ButtonStatus {
+    unsigned char plus  :1;
+    unsigned char minus  :1;
+};
+
+struct ButtonStatus buttonStatus;
+
+void printLocalTemp(unsigned char line);
+void printInternalTemp(unsigned char line);
+void printThereshold(unsigned char line);
+bool isBtPlus();
+
 void main(void)
 {
     /* Configure the oscillator for the device */
@@ -53,9 +69,9 @@ void main(void)
     InitApp();
 
     /* TODO <INSERT USER APPLICATION CODE HERE> */
-    uint16_t localTemp=0;
+    localTemp=0;
     uint16_t dataCount=0;
-    uint16_t tempReal=0;
+    tempReal=0;
     startDS18B20();
     while(1) {
         localTemp = getDS18B20();
@@ -63,22 +79,13 @@ void main(void)
         uint16_t mv2 = getVolt(THERM2);
         uint16_t mean = (mv1 + mv2)/2;
         uint16_t temp = tempConvert(mv1);
-        
 
-        
-        
         if (localTemp != 0xFF){
-            itoa(buffer,localTemp,10);
-            line2();
-            writeLCD(buffer);
-            writeLCD("    ");
-       
-            itoa(buffer,temp+localTemp,10);
-            line1();
-            writeLCD(buffer);
-            writeLCD("    ");
-            startDS18B20();
+            printInternalTemp(1);
+            //printLocalTemp(2);
+            printThereshold(2);
             
+            startDS18B20();
             tempReal = localTemp + temp;
         }
         itoa(buffer,temp,10);
@@ -106,8 +113,72 @@ void main(void)
         } else {
             enableOut();
         }
-        
+        if (isBtPlus()){
+            thereshold++;
+        }
     }
 
 }
 
+
+void printLocalTemp(unsigned char line) {
+    memset(buffer,' ',16);
+    itoa(buffer,localTemp,10);
+    if (line==1){
+        line1();
+    } else {
+        line2();
+    }
+    writeLCDC(buffer,16);
+}
+
+void printThereshold(unsigned char line) {
+    memset(buffer,' ',16);
+    itoa(buffer,thereshold,10);
+    if (line==1){
+        line1();
+    } else {
+        line2();
+    }
+    writeLCDC(buffer,16);
+}
+ 
+void printInternalTemp(unsigned char line){
+    memset(buffer,' ',16);
+    itoa(buffer,tempReal,10);
+    if (line==1){
+        line1();
+    } else {
+        line2();
+    }
+
+    writeLCDC(buffer,16);
+}
+
+bool isBtPlus() {
+    bool result=false;
+    if (PORTBbits.RB1 == 0){
+        Delay1TCYx(1);
+        if (PORTBbits.RB1 == 0){
+            Delay1TCYx(1);
+            if (PORTBbits.RB1 == 0){
+                buttonStatus.plus = 0;
+            }
+        }
+    } else {
+        if (PORTBbits.RB1 == 1){
+            Delay1TCYx(1);
+            if (PORTBbits.RB1 == 1){
+                Delay1TCYx(1);
+                if (PORTBbits.RB1 == 1){
+                    if (buttonStatus.plus == 0){
+                        result = true;
+                    }
+                    buttonStatus.plus = 1;
+                }
+            }
+        }
+    }
+    
+    return result;
+}
