@@ -21,6 +21,7 @@
 #include "LCD.h"
 #include "ADC.h"
 #include "RS232.h"
+#include "PWM.h"
 
 /******************************************************************************/
 /* User Functions                                                             */

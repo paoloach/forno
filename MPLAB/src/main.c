@@ -70,7 +70,6 @@ void main(void)
 
     /* TODO <INSERT USER APPLICATION CODE HERE> */
     localTemp=0;
-    uint16_t dataCount=0;
     tempReal=0;
     startDS18B20();
     while(1) {
@@ -89,24 +88,8 @@ void main(void)
             tempReal = localTemp + temp;
         }
         itoa(buffer,temp,10);
-        for(uint8_t i=0; buffer[i] != 0; i++){
-            sendRS232(buffer[i]);
-            dataCount++;
-        }
-        if (localTemp != 0xFF){
-            sendRS232('\n');
-            sendRS232('\r');
-            itoa(buffer,dataCount,10);
-            for(uint8_t i=0; buffer[i] != 0; i++){
-                sendRS232(buffer[i]);
-            }
-            sendRS232(',');
-            sendRS232(' ');
-            dataCount=0;
-        } else {
-            sendRS232(',');
-            sendRS232(' ');
-        }
+        sendRS232(buffer);
+        sendRS232(", ");
         
         if (tempReal > thereshold ){
             disableOut();

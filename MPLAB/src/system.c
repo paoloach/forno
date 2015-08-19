@@ -2,22 +2,16 @@
 /*Files to Include                                                            */
 /******************************************************************************/
 
-#if defined(__XC)
-    #include <xc.h>         /* XC8 General Include File */
-#elif defined(HI_TECH_C)
-    #include <htc.h>        /* HiTech General Include File */
-#elif defined(__18CXX)
-    #include <p18cxxx.h>    /* C18 General Include File */
-#endif
 
-#if defined(__XC) || defined(HI_TECH_C)
+#include <p18cxxx.h>    /* C18 General Include File */
+
 
 #include <stdint.h>         /* For uint8_t definition */
 #include <stdbool.h>        /* For true/false definition */
 
-#endif
 
 #include "system.h"
+#include "RS232.h"
 
 /* Refer to the device datasheet for information about available
 oscillator configurations. */
@@ -28,4 +22,20 @@ void ConfigureOscillator(void)
     /* Typical actions in this function are to tweak the oscillator tuning
     register, select new clock sources, and to wait until new clock sources
     are stable before resuming execution of the main project. */
+}
+
+
+void high_isr(void);
+
+
+/* 
+ * For PIC18 devices the high interrupt vector is found at
+ * 00000008h. The following code will branch to the
+ * high_interrupt_service_routine function to handle
+ * interrupts that occur at the high vector.
+ */
+#pragma interrupt_level 1
+void interrupt interrupt_at_high_vector(void) @ 0x10
+{
+  RS232_ISR();
 }

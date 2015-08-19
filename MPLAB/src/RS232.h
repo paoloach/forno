@@ -17,7 +17,8 @@ extern "C" {
 
 
 void initRS232(void);
-void sendRS232(uint8_t data);
+void sendRS232(const uint8_t * data);
+void RS232_ISR(void);
 
 #ifdef	__cplusplus
 }
