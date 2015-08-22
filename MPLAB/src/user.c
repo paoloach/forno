@@ -22,6 +22,7 @@
 #include "ADC.h"
 #include "RS232.h"
 #include "PWM.h"
+#include "webServer.h"
 
 /******************************************************************************/
 /* User Functions                                                             */
@@ -36,5 +37,6 @@ void InitApp(void)
     initADC();
     initRS232();
     initPWM();
+    initWebServer();
 }
 

@@ -1,5 +1,4 @@
 #include <stdint.h>
-#include <delays.h>
 #include "LCD.h"
 
 #include <xc.h>         /* XC8 General Include File */
@@ -74,18 +73,15 @@ static void waitForLCDStart(void){
 }
 
 static void waitFor30ms(void) {
-     for(uint8_t i=0; i< 30;i++ ){
-        Delay100TCYx(TICK_FOR_MICROSEC*10);
-    }
+    __delay_ms(30);
 }
 
 static void waitFor2ms(void){
-    Delay100TCYx(TICK_FOR_MICROSEC*10);
-    Delay100TCYx(TICK_FOR_MICROSEC*10);
+    __delay_ms(2);
 }
 
 static void waitFor39us(void) {
-    Delay1TCYx(TICK_FOR_MICROSEC*39);
+    __delay_us(39);
 }
 
 void writeDataLCD(char data){
@@ -114,8 +110,7 @@ static void waitNotBusy(void){
     RW=1;
     do {
         E=1;
-        Delay1TCY();
-        Delay1TCY();
+        _delay(2);
         if (PORTDbits.RD7 == 0){
             res=1;
         }

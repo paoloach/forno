@@ -1,6 +1,5 @@
 
 #include <xc.h>
-#include <delays.h>
 #include <stdint.h>
 
 #include "DS18B20.h"
@@ -28,13 +27,13 @@ unsigned char getDS18B20(void) {
     uint8_t tempHeight;
     uint16_t temp;
     TRISCbits.RC0 = 0;
-    Delay1TCYx(4);
+    _delay(4);
     TRISCbits.RC0 = 1;
-    Delay1TCYx(4);
+    _delay(4);
     if (PORTCbits.RC0 == 0){
         return 0xFF;
     }
-    Delay10TCYx(25);
+    _delay(250);
     reset();
     writeDS(0xCC);
     writeDS(0xBE);
@@ -48,27 +47,27 @@ unsigned char getDS18B20(void) {
 static void waitEndConvert(void){
     while(1){
         TRISCbits.RC0 = 0;
-        Delay1TCYx(4);
+        _delay(4);
         TRISCbits.RC0 = 1;
-        Delay1TCYx(4);
+        _delay(4);
         if (PORTCbits.RC0 == 1){
-            Delay10TCYx(25);
+            _delay(250);
             return;
         }
-        Delay10TCYx(25);
+        _delay(250);
     };
 }
 
 static unsigned char reset(){
 
     TRISCbits.RC0 = 0;
-    Delay10TCYx(192);
+    _delay(1920);
     TRISCbits.RC0 = 1;
-    Delay10TCYx(25);
+    _delay(250);
     if (PORTCbits.RC0){
         return 0;
     }
-    Delay10TCYx(192-25);
+    _delay(1920-250);
     return 1;
 }
 
@@ -76,14 +75,14 @@ static uint8_t readDS(){
     uint8_t data=0;
     for(uint8_t i=0; i < 8; i++){
         TRISCbits.RC0 = 0;
-        Delay1TCYx(4);
+        _delay(4);
         TRISCbits.RC0 = 1;
-        Delay1TCYx(4);
+        _delay(4);
         data = data >> 1;
         if (PORTCbits.RC0==1){
             data |= 0x80;
         }
-        Delay1TCYx(120);
+        _delay(120);
     }
     return data;
 }
@@ -97,9 +96,9 @@ static void writeDS(unsigned char data){
             NOP();
             TRISCbits.RC0=1;
             NOP();
-            Delay10TCYx(15);
+            _delay(150);
         } else {
-            Delay10TCYx(15);
+            _delay(150);
             TRISCbits.RC0=1;
         }
         data = data >> 1;

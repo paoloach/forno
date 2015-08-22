@@ -7,7 +7,7 @@ struct TempData {
     unsigned short  millivolt;
 };
 
-static const eeprom struct TempData  dati[] ={
+static const struct TempData  dati[] ={
     {255,3597},
     {254,3593},
     {253,3588},

@@ -19,7 +19,6 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include <delays.h>
 #include <pic18f4620.h>
 
 #include "system.h"        /* System funct/params, like osc/peripheral config */
@@ -30,6 +29,7 @@
 #include "DS18B20.h"
 #include "RS232.h"
 #include "PWM.h"
+#include "webServer.h"
 
 
 
@@ -74,8 +74,10 @@ void main(void)
     startDS18B20();
     while(1) {
         localTemp = getDS18B20();
-        uint16_t mv1 = getVolt(THERM1);
-        uint16_t mv2 = getVolt(THERM2);
+    //    uint16_t mv1 = getVolt(THERM1);
+    //    uint16_t mv2 = getVolt(THERM2);
+        uint16_t mv1 = 0;
+        uint16_t mv2 = 0;
         uint16_t mean = (mv1 + mv2)/2;
         uint16_t temp = tempConvert(mv1);
 
@@ -88,9 +90,8 @@ void main(void)
             tempReal = localTemp + temp;
         }
         itoa(buffer,temp,10);
-        sendRS232(buffer);
-        sendRS232(", ");
-        
+        workWebServer();
+      
         if (tempReal > thereshold ){
             disableOut();
         } else {
@@ -141,18 +142,18 @@ void printInternalTemp(unsigned char line){
 bool isBtPlus() {
     bool result=false;
     if (PORTBbits.RB1 == 0){
-        Delay1TCYx(1);
+        _delay(1);
         if (PORTBbits.RB1 == 0){
-            Delay1TCYx(1);
+            _delay(1);
             if (PORTBbits.RB1 == 0){
                 buttonStatus.plus = 0;
             }
         }
     } else {
         if (PORTBbits.RB1 == 1){
-            Delay1TCYx(1);
+            _delay(1);
             if (PORTBbits.RB1 == 1){
-                Delay1TCYx(1);
+                _delay(1);
                 if (PORTBbits.RB1 == 1){
                     if (buttonStatus.plus == 0){
                         result = true;

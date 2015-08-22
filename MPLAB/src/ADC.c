@@ -18,7 +18,7 @@ void initADC(void){
 
 uint16_t readADC(int channel){
     ADCON0bits.CHS = channel;
-    Delay10TCYx(30);
+    _delay(300);
     PIR1bits.ADIF=0;
     ADCON0bits.GO=1;
 //    SLEEP();
