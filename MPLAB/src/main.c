@@ -48,6 +48,10 @@ int status=0;
 uint16_t localTemp;
 uint16_t thereshold=110;;
 uint16_t tempReal=0;
+uint16_t temp1;
+uint16_t temp2;
+uint16_t temp;
+uint8_t  enable=1;
 struct ButtonStatus {
     unsigned char plus  :1;
     unsigned char minus  :1;
@@ -74,12 +78,11 @@ void main(void)
     startDS18B20();
     while(1) {
         localTemp = getDS18B20();
-    //    uint16_t mv1 = getVolt(THERM1);
-    //    uint16_t mv2 = getVolt(THERM2);
-        uint16_t mv1 = 0;
-        uint16_t mv2 = 0;
-        uint16_t mean = (mv1 + mv2)/2;
-        uint16_t temp = tempConvert(mv1);
+        uint16_t mv1 = getVolt(THERM1);
+        uint16_t mv2 = getVolt(THERM2);
+        temp1 = tempConvert(mv1);
+        temp2 = tempConvert(mv2);
+        temp2 = (temp1 + temp2)/2;
 
         if (localTemp != 0xFF){
             printInternalTemp(1);
@@ -92,7 +95,7 @@ void main(void)
         itoa(buffer,temp,10);
         workWebServer();
       
-        if (tempReal > thereshold ){
+        if (tempReal > thereshold || enable!=1 ){
             disableOut();
         } else {
             enableOut();

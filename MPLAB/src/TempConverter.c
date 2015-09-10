@@ -268,6 +268,9 @@ static const struct TempData  dati[] ={
 
 
 unsigned short tempConvert(unsigned short mv){
+    if (mv == 0){
+        return 2500;
+    }
     const struct TempData * iter = dati;
     for (unsigned int i=0; i < sizeof(dati); i++){
         if (iter->millivolt <= mv){

@@ -140,6 +140,7 @@ int8_t getLine(unsigned char * dst) {
                 if (data == '\r' && waitForLF == 0) {
                     waitForLF = 1;
                 } else if (data == '\n' && waitForLF != 0) {
+                    dst--;
                     *dst = 0;
                     inRead = iter + 1;
                     return 1;
@@ -149,9 +150,9 @@ int8_t getLine(unsigned char * dst) {
                 }
             } else {
                 *dst = data;
-                dst++;
-                iter++;
             }
+            dst++;
+            iter++;
         }
         return 0;
     } else {
@@ -161,6 +162,7 @@ int8_t getLine(unsigned char * dst) {
                 if (data == '\r' && waitForLF == 0) {
                     waitForLF = 1;
                 } else if (data == '\n' && waitForLF != 0) {
+                    dst--;
                     *dst = 0;
                     inRead = iter + 1;
                     return 1;
@@ -181,6 +183,7 @@ int8_t getLine(unsigned char * dst) {
                 if (data == '\r' && waitForLF == 0) {
                     waitForLF = 1;
                 } else if (data == '\n' && waitForLF != 0) {
+                    dst--;
                     *dst = 0;
                     inRead = iter + 1;
                     return 1;
