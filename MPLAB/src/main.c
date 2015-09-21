@@ -66,11 +66,19 @@ bool isBtPlus();
 
 void main(void)
 {
+
     /* Configure the oscillator for the device */
     ConfigureOscillator();
+    
 
+    
     /* Initialize I/O and Peripherals for application */
     InitApp();
+   
+#ifdef TEST
+    RS232_TEST();
+    while(1);
+#endif
 
     /* TODO <INSERT USER APPLICATION CODE HERE> */
     localTemp=0;

@@ -50,3 +50,10 @@
 
 # Debug files
 *.dSYM/
+/MPLAB/build/test/
+/MPLAB/dist/test/
+/MPLAB/build/TEST/
+/MPLAB/dist/TEST/
+/MPLAB/tests/RS232/FornoTest.X/nbproject/private/
+/MPLAB/tests/RS232/FornoTest.X/build/test/
+/MPLAB/tests/RS232/FornoTest.X/dist/test/

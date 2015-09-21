@@ -6,6 +6,7 @@
 #include "RS232.h"
 
 
+
 // Init at 38499 -->  SPBRG=77,  SPBRGH=0;
 
 static volatile uint8_t outBuffer[256];
@@ -13,10 +14,14 @@ static volatile uint8_t * endOutBuffer = outBuffer + 256;
 static volatile uint8_t * outWrite = outBuffer;
 static volatile uint8_t * outRead = outBuffer;
 
-static volatile uint8_t inBuffer[256];
-static volatile uint8_t * endInBuffer = inBuffer + 256;
-static volatile uint8_t * inWrite = inBuffer;
-static volatile uint8_t * inRead = inBuffer;
+static uint8_t inBuffer[512];
+static uint8_t * endInBuffer = inBuffer + 512;
+static uint8_t * inWrite = inBuffer;
+static uint8_t * inRead = inBuffer;
+
+uint8_t * rs232_getInBuffer(void) {
+    return inBuffer;
+}
 
 void initRS232(void) {
     TRISCbits.RC6 = 1;
@@ -46,7 +51,12 @@ void initRS232(void) {
     RCONbits.IPEN = 1;
     INTCONbits.GIE = 1;
     INTCONbits.PEIE = 1;
+}
 
+void resetRS232(void) {
+    inWrite = inBuffer;
+    inRead = inBuffer;
+    memset(inBuffer, 0, 512 );
 }
 
 void sendRS232(const uint8_t * data) {
@@ -118,11 +128,15 @@ void RS232_ISR(void) {
     }
     if (PIR1bits.RCIF) {
         PIR1bits.RCIF = 0;
-        *inWrite = RCREG;
-        inWrite++;
-        if (inWrite == endInBuffer) {
-            inWrite = inBuffer;
-        }
+        addRS232Char(RCREG);
+    }
+}
+
+void addRS232Char(uint8_t data) {
+    *inWrite =data;
+    inWrite++;
+    if (inWrite == endInBuffer) {
+        inWrite = inBuffer;
     }
 }
 
@@ -130,7 +144,7 @@ int8_t getLine(unsigned char * dst) {
     uint8_t * iter = inRead;
     uint8_t waitForLF = 0;
     uint8_t data;
-    if (inRead == inWrite){
+    if (inRead == inWrite) {
         return 0;
     }
     if (inRead < inWrite) {
@@ -201,3 +215,5 @@ int8_t getLine(unsigned char * dst) {
         return 0;
     }
 }
+
+

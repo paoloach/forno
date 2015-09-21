@@ -33,10 +33,14 @@
 
 void InitApp(void)
 {
+#ifdef TEST
+    initRS232();
+#else
     initLCD();
     initADC();
     initRS232();
     initPWM();
     initWebServer();
+#endif
 }
 
