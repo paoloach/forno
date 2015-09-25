@@ -79,16 +79,41 @@ static enum HTTPResponse httpResponse;
 static enum ContentType contentType;
 static enum MethodType methodType;
 
+uint8_t isWebServerOn(void) {
+    return enableWebServer;
+}
+
 void initWebServer() {
-    static char initBuffer[10];
-    static const char respOK[] = "OK\r\n";
+    static char initBuffer[20];
+    static const char respOK[] = "OK";
     static const char string1[] = "AT+CWMODE=3\r\n";
+    static const char string2[] = "AT+CIPMUX=1\r\n";
+    static const char string3[] = "AT+CIPSERVER=1,8080\r\n";
     httpStatus = httpRequest;
     sendRS232(string1);
     while (getRS232ReadSize() <4);
-    getRS232ReadData(initBuffer, 4);
-    if (memcmp(initBuffer, respOK, sizeof(respOK)-1)!=0){
-        
+    enableWebServer=0;
+    if (getRS232ReadSize() < 20){
+        getLine(initBuffer);
+        if (memcmp(initBuffer, respOK, sizeof(respOK)-1)!=0){
+            return;
+        }
+    }
+    sendRS232(string2);
+    while (getRS232ReadSize() <4);
+    if (getRS232ReadSize() < 20){
+        getLine(initBuffer);
+        if (memcmp(initBuffer, respOK, sizeof(respOK)-1)!=0){
+            return;
+        }
+    }
+    sendRS232(string3);
+    while (getRS232ReadSize() <4);
+    if (getRS232ReadSize() < 20){
+        getLine(initBuffer);
+        if (memcmp(initBuffer, respOK, sizeof(respOK)-1)!=0){
+            return;
+        }
     }
     enableWebServer=1;
 }

@@ -4,8 +4,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+            <file>file:/home/paolo/workspace/forno/MPLAB/src/webServer.h</file>
             <file>file:/home/paolo/workspace/forno/MPLAB/src/webServer.c</file>
             <file>file:/home/paolo/workspace/forno/MPLAB/src/RS232.c</file>
+            <file>file:/home/paolo/workspace/forno/MPLAB/src/DS18B20.c</file>
             <file>file:/home/paolo/workspace/forno/MPLAB/src/RS232.h</file>
         </group>
     </open-files>

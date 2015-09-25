@@ -8,12 +8,16 @@
 #ifndef WEBSERVER_H
 #define	WEBSERVER_H
 
+#include <stdint.h>
+
 #ifdef	__cplusplus
 extern "C" {
 #endif
 
     void initWebServer();
     void workWebServer();
+    
+    uint8_t isWebServerOn(void);
 
 
 

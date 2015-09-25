@@ -19,6 +19,8 @@
       <itemPath>src/main.c</itemPath>
       <itemPath>src/unity.c</itemPath>
       <itemPath>TEST_RS232.c</itemPath>
+      <itemPath>../../../src/webServer.c</itemPath>
+      <itemPath>../../../src/webServer.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -70,7 +72,7 @@
       </makeCustomizationType>
       <HI-TECH-COMP>
         <property key="asmlist" value="true"/>
-        <property key="define-macros" value=""/>
+        <property key="define-macros" value="TEST"/>
         <property key="extra-include-directories" value="../../../src;src"/>
         <property key="identifier-length" value="255"/>
         <property key="operation-mode" value="free"/>

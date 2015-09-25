@@ -26,10 +26,12 @@ void RS232_ISR(void);
 uint16_t getRS232ReadSize(void);
 void getRS232ReadData(unsigned char * dst, uint8_t size);
 int8_t getLine(unsigned char * dst);
+int8_t getIPDLine(uint8_t * dst);
 
 void resetRS232(void);
 void addRS232Char(uint8_t data);
 uint8_t * rs232_getInBuffer(void);
+
 
 #ifdef TEST
 void RS232_TEST(void);

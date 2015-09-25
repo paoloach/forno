@@ -54,10 +54,10 @@ longjmp_test(jmp_buf_test jp, int retval)
 
 struct _Unity Unity;
 
-const char UnityStrOk[]                     = "OK\n\r";
-const char UnityStrPass[]                   = "PASS\n\r";
-const char UnityStrFail[]                   = "FAIL\n\r";
-const char UnityStrIgnore[]                 = "IGNORE\n\r";
+const char UnityStrOk[]                     = "OK";
+const char UnityStrPass[]                   = "PASS";
+const char UnityStrFail[]                   = "FAIL";
+const char UnityStrIgnore[]                 = "IGNORE";
 const char UnityStrNull[]                   = "NULL";
 const char UnityStrSpacer[]                 = ". ";
 const char UnityStrExpected[]               = " Expected ";
