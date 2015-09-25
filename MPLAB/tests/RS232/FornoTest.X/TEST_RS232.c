@@ -92,6 +92,15 @@ void addLine(const char * str) {
     addRS232Char('\n');
 }
 
+void moveReadPointerToEndMinus(uint8_t minus) {
+     for (uint16_t i = 0; i < 512-minus; i++) {
+        addRS232Char('a');
+    }
+    for (uint16_t i = 0; i < 512-minus; i++) {
+        getRS232ReadData(buffer, 1);
+    }
+}
+
 void test_firstData(void) {
     addString(str1);
     int len = sizeof (str1) - 1;
@@ -200,18 +209,62 @@ void test_IPDDataWithPreviousResponse() {
     TEST_ASSERT_EQUAL(getIPDLine(buffer), 0);
 }
 
-void test_twoData() {
+void test_twoIPData() {
     addString("+IPD,0,14:line1\r\nline2\r\n");
-    addString("+IPD,0,14:line4\r\nline3\r\n");
-    TEST_ASSERT(getIPDLine(buffer), 1);
+    addString("+IPD,0,14:line3\r\nline4\r\n");
+    TEST_ASSERT_EQUAL(1, getIPDLine(buffer));
     TEST_ASSERT_EQUAL_STRING("line1", buffer);
-    TEST_ASSERT_EQUAL(getIPDLine(buffer), 1);
+    TEST_ASSERT_EQUAL(1, getIPDLine(buffer));
     TEST_ASSERT_EQUAL_STRING("line2", buffer);
-    TEST_ASSERT_EQUAL(getIPDLine(buffer), 1);
+    TEST_ASSERT_EQUAL(1,getIPDLine(buffer));
     TEST_ASSERT_EQUAL_STRING("line3", buffer);
-    TEST_ASSERT_EQUAL(getIPDLine(buffer), 1);
+    TEST_ASSERT_EQUAL(1, getIPDLine(buffer));
     TEST_ASSERT_EQUAL_STRING("line4", buffer);
-    TEST_ASSERT_EQUAL(getIPDLine(buffer), 0);
+    TEST_ASSERT_EQUAL(0, getIPDLine(buffer));
+}
+
+
+void test_IPDroundPayload(void) {
+    moveReadPointerToEndMinus(12);
+    addString("+IPD,0,14:line1\r\nline2\r\n");
+   
+    TEST_ASSERT_EQUAL(1, getIPDLine(buffer));
+    TEST_ASSERT_EQUAL_STRING("line1", buffer);
+    TEST_ASSERT_EQUAL(1, getIPDLine(buffer));
+    TEST_ASSERT_EQUAL_STRING("line2", buffer);
+    TEST_ASSERT_EQUAL(0,getIPDLine(buffer));
+}
+
+void test_IPDroundLenPayload(void) {
+    moveReadPointerToEndMinus(8);
+    addString("+IPD,0,14:line1\r\nline2\r\n");
+   
+    TEST_ASSERT_EQUAL(1, getIPDLine(buffer));
+    TEST_ASSERT_EQUAL_STRING("line1", buffer);
+    TEST_ASSERT_EQUAL(1, getIPDLine(buffer));
+    TEST_ASSERT_EQUAL_STRING("line2", buffer);
+    TEST_ASSERT_EQUAL(0,getIPDLine(buffer));
+}
+void test_IPDroundChannel(void) {
+    moveReadPointerToEndMinus(6);
+    addString("+IPD,000,14:line1\r\nline2\r\n");
+   
+    TEST_ASSERT_EQUAL(1, getIPDLine(buffer));
+    TEST_ASSERT_EQUAL_STRING("line1", buffer);
+    TEST_ASSERT_EQUAL(1, getIPDLine(buffer));
+    TEST_ASSERT_EQUAL_STRING("line2", buffer);
+    TEST_ASSERT_EQUAL(0,getIPDLine(buffer));
+}
+
+void test_IPDroundHeader(void) {
+    moveReadPointerToEndMinus(2);
+    addString("+IPD,0,14:line1\r\nline2\r\n");
+   
+    TEST_ASSERT_EQUAL(1, getIPDLine(buffer));
+    TEST_ASSERT_EQUAL_STRING("line1", buffer);
+    TEST_ASSERT_EQUAL(1, getIPDLine(buffer));
+    TEST_ASSERT_EQUAL_STRING("line2", buffer);
+    TEST_ASSERT_EQUAL(0,getIPDLine(buffer));
 }
 
 void runTest(void) {
@@ -225,5 +278,9 @@ void runTest(void) {
     RUN_TEST(test_InitWebServer);
     RUN_TEST(test_simpleIPDData);
     RUN_TEST(test_IPDDataWithPreviousResponse);
-    RUN_TEST(test_twoData);
+    RUN_TEST(test_twoIPData);
+    RUN_TEST(test_IPDroundPayload);
+    RUN_TEST(test_IPDroundLenPayload);
+    RUN_TEST(test_IPDroundChannel);
+    RUN_TEST(test_IPDroundHeader);
 }

@@ -130,7 +130,7 @@ void workWebServer() {
             checkHeader();
             break;
         case httpWaitForEndRequest:
-            if (getLine(buffer) == 1) {
+            if (getIPDLine(buffer) == 1) {
                 if (buffer[0] == 0) {
                     httpStatus = httpSendResponse;
                 }
@@ -160,7 +160,7 @@ static void elaboratePutBody(void) {
 }
 
 static void setEnable(void) {
-    if (getLine(buffer) == 1) {
+    if (getIPDLine(buffer) == 1) {
         if (buffer[0] == '1' && buffer[1] == 0) {
             enable = 1;
         } else {
@@ -193,7 +193,7 @@ static void checkSendResponse(void) {
 static void checkRequestLine(void) {
     static const char strGET[] = "GET ";
     static const char strPUT[] = "PUT ";
-    if (getLine(buffer) == 1) {
+    if (getIPDLine(buffer) == 1) {
         httpResponse = httpWrongProtocoll;
         if (parseRequestLine(buffer)) {
             if (rightHTTPVersion(startHTTP_Version)) {
@@ -220,7 +220,7 @@ static void checkRequestLine(void) {
 static void checkHeader(void) {
     static const char string1[] = "Content-Type: text/html";
     static const char string2[] = "Content-Length: ";
-    if (getLine(buffer) == 1) {
+    if (getIPDLine(buffer) == 1) {
         if (buffer[0] == 0) {
             switch (methodType) {
                 case methodPUT:

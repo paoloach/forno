@@ -295,17 +295,20 @@ int8_t getIPDLine(uint8_t * dst) {
         IPDIter = inRead;
         if (IPDIter < inWrite) {
             endSearch = inWrite;
-            return copyData();
+            result = copyData();
         } else {
             endSearch = endInBuffer;
             result = copyData();
-            if (result != 0) {
-                return result;
+            if (result == 0){
+                IPDIter = inBuffer;
+                endSearch = inWrite;
+                result = copyData();
             }
-            IPDIter = inBuffer;
-            endSearch = inWrite;
-            return copyData();
         }
+        if (dataLen == 0){
+            IPDstatus.IPDdataStartSearch=1;
+        }
+        return result;
     }
     return 0;
 }
