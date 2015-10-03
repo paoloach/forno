@@ -2,6 +2,7 @@
 #include "RS232.h"
 #include <string.h>
 #include <stdlib.h>
+#include <ctype.h>
 
 
 static char buffer[256];
@@ -45,7 +46,7 @@ enum HTTPResponse {
 };
 
 extern uint16_t localTemp;
-extern uint16_t thereshold;
+extern uint16_t threshold;
 extern uint16_t tempReal;
 extern uint16_t temp1;
 extern uint16_t temp2;
@@ -62,17 +63,21 @@ static void checkHeader(void);
 static void checkSendResponse(void);
 static void elaboratePutBody(void);
 static void setEnable(void);
+static void setThreshold(void);
 
 static void sendWrongProtocol(void);
 static void sendNotFound(void);
 static void sendOk(void);
 static void sendBody(void);
 
+static void sendIP(const char *str);
+
+
 static char * startMethod;
 static char * startRequestURI;
 static char * startHTTP_Version;
 static int16_t contentLenght;
-static uint8_t enableWebServer=0;
+static uint8_t enableWebServer = 0;
 static enum HTTPParserStatus httpStatus;
 static enum Resources resource;
 static enum HTTPResponse httpResponse;
@@ -91,35 +96,35 @@ void initWebServer() {
     static const char string3[] = "AT+CIPSERVER=1,8080\r\n";
     httpStatus = httpRequest;
     sendRS232(string1);
-    while (getRS232ReadSize() <4);
-    enableWebServer=0;
-    if (getRS232ReadSize() < 20){
+    while (getRS232ReadSize() < 4);
+    enableWebServer = 0;
+    if (getRS232ReadSize() < 20) {
         getLine(initBuffer);
-        if (memcmp(initBuffer, respOK, sizeof(respOK)-1)!=0){
+        if (memcmp(initBuffer, respOK, sizeof (respOK) - 1) != 0) {
             return;
         }
     }
     sendRS232(string2);
-    while (getRS232ReadSize() <4);
-    if (getRS232ReadSize() < 20){
+    while (getRS232ReadSize() < 4);
+    if (getRS232ReadSize() < 20) {
         getLine(initBuffer);
-        if (memcmp(initBuffer, respOK, sizeof(respOK)-1)!=0){
+        if (memcmp(initBuffer, respOK, sizeof (respOK) - 1) != 0) {
             return;
         }
     }
     sendRS232(string3);
-    while (getRS232ReadSize() <4);
-    if (getRS232ReadSize() < 20){
+    while (getRS232ReadSize() < 4);
+    if (getRS232ReadSize() < 20) {
         getLine(initBuffer);
-        if (memcmp(initBuffer, respOK, sizeof(respOK)-1)!=0){
+        if (memcmp(initBuffer, respOK, sizeof (respOK) - 1) != 0) {
             return;
         }
     }
-    enableWebServer=1;
+    enableWebServer = 1;
 }
 
 void workWebServer() {
-    if (enableWebServer==0){
+    if (enableWebServer == 0) {
         return;
     }
     switch (httpStatus) {
@@ -151,6 +156,7 @@ static void elaboratePutBody(void) {
             setEnable();
             break;
         case resSetThreshold:
+            setThreshold();
             break;
         default:
             httpStatus = httpSendResponse;
@@ -167,6 +173,22 @@ static void setEnable(void) {
             // any other value but '1' is false, that is power off the oven
             enable = 0;
         }
+        httpStatus = httpSendResponse;
+        httpResponse = httpOK;
+    }
+}
+
+static void setThreshold(void) {
+    if (getIPDLine(buffer) == 1) {
+        char * iter = buffer;
+        for (; *iter != 0; iter++) {
+            if (isdigit(*iter) != 1) {
+                httpStatus = httpSendResponse;
+                httpResponse = httpWrongProtocoll;
+                return;
+            }
+        }
+        threshold = atoi(buffer);
         httpStatus = httpSendResponse;
         httpResponse = httpOK;
     }
@@ -205,6 +227,9 @@ static void checkRequestLine(void) {
                     methodType = methodPUT;
                     managePUT(startRequestURI);
                 } else {
+                    httpResponse = httpNotFound;
+                }
+                if (resource == resNONE) {
                     httpResponse = httpNotFound;
                 }
             } else {
@@ -296,7 +321,7 @@ static uint8_t rightHTTPVersion(char * iter) {
 // /who_are_you --> version
 
 static void manageGET(char * iter) {
-    static const char string1 [] = "/temp ";
+    static const char string1 [] = "/temp";
     static const char string2 [] = "/threshold ";
     static const char string3 [] = "/who_are_you ";
     resource = resNONE;
@@ -309,7 +334,6 @@ static void manageGET(char * iter) {
     } else if (memcmp(iter, string3, sizeof (string3) - 1) == 0) {
         iter += sizeof (string3) - 1;
         resource = resGetWhoAreYou;
-
     } else {
         resource = resNONE;
     }
@@ -365,15 +389,15 @@ static void managePUT(char * iter) {
 }
 
 static void sendWrongProtocol(void) {
-    sendRS232("HTTP/1.1 400 Bad Request\r\n\r\n");
+    sendIP("HTTP/1.1 400 Bad Request\r\n\r\n");
 }
 
 static void sendNotFound(void) {
-    sendRS232("HTTP/1.1 40$ Request not found\r\n\r\n");
+    sendIP("HTTP/1.1 404 Request not found\r\n\r\n");
 }
 
 static void sendOk(void) {
-    sendRS232("HTTP/1.1 200  OK\r\n\r\n");
+    sendIP("HTTP/1.1 200  OK\r\n");
 }
 
 static void sendBody(void) {
@@ -393,20 +417,36 @@ static void sendBody(void) {
             body = itoa(buffer, temp2, 10);
             break;
         case resGetThreshold:
-            body = itoa(buffer, thereshold, 10);
+            body = itoa(buffer, threshold, 10);
             break;
         case resGetWhoAreYou:
             body = "I am Oven version 1.0";
+            break;
         default:
             body = NULL;
     }
     if (body != NULL) {
         uint8_t len = strlen(body);
-        sendRS232("Content-Length: ");
+        sendIP("Content-Length: ");
         itoa(strLen, len, 10);
-        sendRS232(strLen);
-        sendRS232("\r\n");
-        sendRS232(body);
-        sendRS232("\r\n");
+        sendIP(strLen);
+        sendIP("\r\n");
+        sendIP(body);
+        sendIP("\r\n");
     }
+    sendIP("\r\n");
+}
+
+static void sendIP(const char *str) {
+    uint8_t len = strlen(str);
+    sendRS232("AT+CIPSEND=0,");
+    itoa(buffer, len, 10);
+    sendRS232(buffer);
+    sendRS232("\r\n");
+    while (getRS232ReadSize() == 0);
+    getRS232ReadData(buffer, 1);
+    if (buffer[0] != '>') {
+        return;
+    }
+    sendRS232(str);
 }
