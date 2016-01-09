@@ -88,21 +88,16 @@ void main(void)
         localTemp = getDS18B20();
         uint16_t mv1 = getVolt(THERM1);
         uint16_t mv2 = getVolt(THERM2);
-        temp1 = tempConvert(mv1);
+        temp = tempConvert(mv1);
         temp2 = tempConvert(mv2);
         temp2 = (temp1 + temp2)/2;
 
         if (localTemp != 0xFF){
-            printInternalTemp(1);
-            //printLocalTemp(2);
-            printThereshold(2);
-            
             startDS18B20();
             tempReal = localTemp + temp;
         }
         itoa(buffer,temp,10);
-        workWebServer();
-      
+     
         if (tempReal > thereshold || enable!=1 ){
             disableOut();
         } else {

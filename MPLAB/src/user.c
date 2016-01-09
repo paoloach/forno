@@ -38,9 +38,9 @@ void InitApp(void)
 #else
     initLCD();
     initADC();
-    initRS232();
+//    initRS232();
     initPWM();
-    initWebServer();
+//    initWebServer();
 #endif
 }
 

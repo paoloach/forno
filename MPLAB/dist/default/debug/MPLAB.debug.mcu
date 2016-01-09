@@ -2,16 +2,16 @@
 Memory Class Usage:
 
 Program space:
-    CODE                 used  1E6Bh (  7787) of 10000h bytes   ( 11.9%)
-    CONST                used     0h (     0) of 10000h bytes   (  0.0%)
-    SMALLCONST           used     0h (     0) of  F000h bytes   (  0.0%)
-    MEDIUMCONST          used   44Ah (  1098) of  F000h bytes   (  1.8%)
+    CODE                 used   DEDh (  3565) of  FD00h bytes   (  5.5%)
+    CONST                used     0h (     0) of  FD00h bytes   (  0.0%)
+    SMALLCONST           used     0h (     0) of  ED00h bytes   (  0.0%)
+    MEDIUMCONST          used   44Ah (  1098) of  ED00h bytes   (  1.8%)
 
 Data space:
     COMRAM               used    6Fh (   111) of    7Fh bytes   ( 87.4%)
-    ABS1                 used     0h (     0) of   F80h bytes   (  0.0%)
-    BIGRAM               used   200h (   512) of   F7Fh bytes   ( 12.9%)
-    RAM                  used     0h (     0) of   F00h bytes   (  0.0%)
+    ABS1                 used     0h (     0) of   F6Fh bytes   (  0.0%)
+    BIGRAM               used   200h (   512) of   F6Eh bytes   ( 13.0%)
+    RAM                  used     0h (     0) of   EEFh bytes   (  0.0%)
     BANK0                used    60h (    96) of    80h bytes   ( 75.0%)
     BANK1                used   100h (   256) of   100h bytes   (100.0%)
     BANK2                used   100h (   256) of   100h bytes   (100.0%)
@@ -26,7 +26,7 @@ Data space:
     BANK11               used     0h (     0) of   100h bytes   (  0.0%)
     BANK12               used     0h (     0) of   100h bytes   (  0.0%)
     BANK13               used     0h (     0) of   100h bytes   (  0.0%)
-    BANK14               used     0h (     0) of   100h bytes   (  0.0%)
+    BANK14               used     0h (     0) of    EFh bytes   (  0.0%)
     BANK15               used     0h (     0) of    80h bytes   (  0.0%)
 
 Configuration bits:
@@ -39,5 +39,5 @@ ID Location space:
     IDLOC                used     8h (     8) of     8h bytes   (100.0%)
 
 Data stack space:
-    STACK                used     0h (     0) of   A80h bytes   (  0.0%)
+    STACK                used     0h (     0) of   9EFh bytes   (  0.0%)
 
